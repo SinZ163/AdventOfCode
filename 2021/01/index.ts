@@ -1,6 +1,6 @@
 import * as fs from "fs";
 
-const input = fs.readFileSync("src/day1/input.txt").toString().split("\n").map(row => row.trim()).map(row => Number.parseInt(row));
+const input = fs.readFileSync("01/input.txt").toString().split("\n").map(row => row.trim()).map(row => Number.parseInt(row));
 
 let part1 = 0;
 let part2 = 0;
