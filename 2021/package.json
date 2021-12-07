@@ -10,7 +10,7 @@
     "typescript": "^4.1.2"
   },
   "scripts": {
-    "start": "esbuild-dev"
+    "start": "esbuild-dev run"
   },
   "devDependencies": {
     "@tsconfig/node12": "^1.0.7"
