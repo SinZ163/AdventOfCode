@@ -1,28 +1,32 @@
 export default function main(rawInput: string): [string|number, string|number] {
-    let input = rawInput.split("\n")
-    .map(row => row.trim().split('').map(cell => Number.parseInt(cell)));
+    rawInput = rawInput.replace(/\r/g, '');
+    let width = rawInput.indexOf("\n");
+    rawInput = rawInput.replace(/\n/g, '');
+    let input = rawInput.split('');
+
+    const charCodeReference = "0".charCodeAt(0);
 
     let part1 = 0;
     let part2 = 0;
     let basins: Array<[number, number]>[] = [];
     let prevRowCache: Array<number|null> = [];
-    for (let y = 0; y < input.length; y++) {
+    for (let y = 0; y * width < input.length; y++) {
         let prevBasinHoriz: number|null = null;
         let currentRowCache: Array<number|null> = [];
-        for (let x = 0; x < input[y].length; x++) {
-            let currentCell = input[y][x];
+        for (let x = 0; x < width; x++) {
+            let currentCell = input[y*width + x].charCodeAt(0) - charCodeReference;
             let isSmaller = true;
             if (x > 0) {
-                if (input[y][x-1] <= currentCell) isSmaller = false;
+                if (input[y*width+x-1].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
             }
             if (y > 0) {
-                if (input[y-1][x] <= currentCell) isSmaller = false;
+                if (input[(y-1)*width+x].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
             }
-            if (x < input[y].length - 1) {
-                if (input[y][x+1] <= currentCell) isSmaller = false;
+            if (x < width - 1) {
+                if (input[y*width+x+1].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
             }
-            if (y < input.length - 1) {
-                if (input[y+1][x] <= currentCell) isSmaller = false;
+            if ((y+1)*width < input.length) {
+                if (input[(y+1)*width+x].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
             }
             if (isSmaller) {
                 part1 += currentCell + 1;
