@@ -1,7 +1,6 @@
 export default function main(rawInput: string): [string|number, string|number] {
-    rawInput = rawInput.replace(/\r/g, '');
     let width = rawInput.indexOf("\n");
-    rawInput = rawInput.replace(/\n/g, '');
+    rawInput = rawInput.replace(/\r|\n/g, '');
     let input = rawInput.split('');
 
     const charCodeReference = "0".charCodeAt(0);
@@ -41,18 +40,10 @@ export default function main(rawInput: string): [string|number, string|number] {
                         if (prevBasinHoriz !== null && prevBasinHoriz != northCache) {
                             // console.log("merging prevBasin", prevBasinHoriz, basins[prevBasinHoriz]);
                             basins[northCache].push(...basins[prevBasinHoriz]);
-                            basins.splice(prevBasinHoriz, 1);
-                            // Update caches as they may be stale
-                            if (prevBasinHoriz < northCache) {
-                                northCache--;
-                            }
                             for (let [i, cache] of currentRowCache.entries()) {
                                 if (cache !== null) {
                                     if (prevBasinHoriz === cache) {
                                         currentRowCache[i] = northCache;
-                                    }
-                                    if (prevBasinHoriz < cache) {
-                                        currentRowCache[i]!--;
                                     }
                                 }
                                 //if (y === 10) console.log("A", cache, northCache);
@@ -61,9 +52,6 @@ export default function main(rawInput: string): [string|number, string|number] {
                                 if (cache !== null) {
                                     if (prevBasinHoriz === cache) {
                                         prevRowCache[i] = northCache;
-                                    }
-                                    if (prevBasinHoriz < cache) {
-                                        prevRowCache[i]!--;
                                     }
                                     //if (y === 10) console.log("B", cache, northCache);
                                 }
