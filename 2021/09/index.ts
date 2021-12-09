@@ -5,8 +5,10 @@ export default function main(rawInput: string): [string|number, string|number] {
     let part1 = 0;
     let part2 = 0;
     let basins: Array<[number, number]>[] = [];
+    let prevRowCache: Array<number|null> = [];
     for (let y = 0; y < input.length; y++) {
         let prevBasinHoriz: number|null = null;
+        let currentRowCache: Array<number|null> = [];
         for (let x = 0; x < input[y].length; x++) {
             let currentCell = input[y][x];
             let isSmaller = true;
@@ -27,25 +29,46 @@ export default function main(rawInput: string): [string|number, string|number] {
             }
             if (currentCell < 9) {
                 let foundBasin = false;
-                // console.log(x,y,prevBasinHoriz);
                 if (y > 0) {
-                    for (let [basinID, basin] of basins.entries()) {
-                        if (basin.findIndex(cell => cell[0] === x && cell[1] === y-1) !== -1) {
-                            basins[basinID].push([x, y]);
-                            if (prevBasinHoriz !== null && prevBasinHoriz != basinID) {
-                                // console.log("merging prevBasin", prevBasinHoriz, basins[prevBasinHoriz]);
-                                basins[basinID].push(...basins[prevBasinHoriz]);
-                                basins.splice(prevBasinHoriz, 1);
-                                if (prevBasinHoriz < basinID) {
-                                    basinID--;
-                                }
-                            } else {
-                                // console.log("Joining existing basin by vertical lookup", x, y, currentCell, prevBasinHoriz);
+                    let northCache = prevRowCache[x];
+                    if (northCache !== null) {
+                        // console.log(y, northCache, basins.length, prevRowCache);
+                        basins[northCache].push([x, y]);
+                        if (prevBasinHoriz !== null && prevBasinHoriz != northCache) {
+                            // console.log("merging prevBasin", prevBasinHoriz, basins[prevBasinHoriz]);
+                            basins[northCache].push(...basins[prevBasinHoriz]);
+                            basins.splice(prevBasinHoriz, 1);
+                            // Update caches as they may be stale
+                            if (prevBasinHoriz < northCache) {
+                                northCache--;
                             }
-                            prevBasinHoriz = basinID;
-                            foundBasin = true;
-                            break;
+                            for (let [i, cache] of currentRowCache.entries()) {
+                                if (cache !== null) {
+                                    if (prevBasinHoriz === cache) {
+                                        currentRowCache[i] = northCache;
+                                    }
+                                    if (prevBasinHoriz < cache) {
+                                        currentRowCache[i]!--;
+                                    }
+                                }
+                                //if (y === 10) console.log("A", cache, northCache);
+                            }
+                            for (let [i, cache] of prevRowCache.entries()) {
+                                if (cache !== null) {
+                                    if (prevBasinHoriz === cache) {
+                                        prevRowCache[i] = northCache;
+                                    }
+                                    if (prevBasinHoriz < cache) {
+                                        prevRowCache[i]!--;
+                                    }
+                                    //if (y === 10) console.log("B", cache, northCache);
+                                }
+                            }
+                        } else {
+                            // console.log("Joining existing basin by vertical lookup", x, y, currentCell, prevBasinHoriz);
                         }
+                        prevBasinHoriz = northCache;
+                        foundBasin = true;
                     }
                 }
                 if (!foundBasin && prevBasinHoriz !== null) {
@@ -61,7 +84,10 @@ export default function main(rawInput: string): [string|number, string|number] {
             } else {
                 prevBasinHoriz = null;
             }
+            currentRowCache.push(prevBasinHoriz);
         }
+        //console.log(y, currentRowCache.length, currentRowCache);
+        prevRowCache = [...currentRowCache];
     }
     // console.log(basins);
     basins.sort((a, b) => b.length - a.length);
