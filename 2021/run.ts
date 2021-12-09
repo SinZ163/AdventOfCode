@@ -4,9 +4,13 @@ import { argv } from "process";
 
 let runCount = Number.parseInt(argv[3]) || 1;
 console.log(argv[2], runCount);
+let inputType = "input";
+if (argv[3] === "test") {
+    inputType = "test";
+}
 
 let preInput = process.hrtime.bigint();
-const input = fs.readFileSync(`${argv[2]}/input.txt`).toString();
+const input = fs.readFileSync(`${argv[2]}/${inputType}.txt`).toString();
 let postInput = process.hrtime.bigint();
 
 let preRequire = process.hrtime.bigint();
@@ -20,6 +24,9 @@ for (let i = 0; i < runCount; i++) {
     let output = day(input);
     let postRun = process.hrtime.bigint();
     if (i === 0) {
+        if (inputType === "test") {
+            console.warn("RUNNING IN TEST MODE DO NOT SUBMIT")
+        }
         console.table({
             part1: output[0],
             part2: output[1]
