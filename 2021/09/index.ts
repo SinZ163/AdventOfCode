@@ -14,23 +14,24 @@ export default function main(rawInput: string): [string|number, string|number] {
         let currentRowCache: Array<number|null> = [];
         for (let x = 0; x < width; x++) {
             let currentCell = input[y*width + x].charCodeAt(0) - charCodeReference;
-            let isSmaller = true;
-            if (x > 0) {
-                if (input[y*width+x-1].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
-            }
-            if (y > 0) {
-                if (input[(y-1)*width+x].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
-            }
-            if (x < width - 1) {
-                if (input[y*width+x+1].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
-            }
-            if ((y+1)*width < input.length) {
-                if (input[(y+1)*width+x].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
-            }
-            if (isSmaller) {
-                part1 += currentCell + 1;
-            }
             if (currentCell < 9) {
+                let isSmaller = true;
+                if (x > 0) {
+                    if (input[y*width+x-1].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
+                }
+                if (y > 0) {
+                    if (input[(y-1)*width+x].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
+                }
+                if (x < width - 1) {
+                    if (input[y*width+x+1].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
+                }
+                if ((y+1)*width < input.length) {
+                    if (input[(y+1)*width+x].charCodeAt(0) - charCodeReference <= currentCell) isSmaller = false;
+                }
+                if (isSmaller) {
+                    part1 += currentCell + 1;
+                }
+                
                 let foundBasin = false;
                 if (y > 0) {
                     let northCache = prevRowCache[x];
