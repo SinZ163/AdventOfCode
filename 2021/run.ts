@@ -1,3 +1,4 @@
+import { time } from "console";
 import * as fs from "fs";
 import { argv } from "process";
 
@@ -36,6 +37,7 @@ for (let i = 0; i < runCount; i++) {
 }
 let postAvg = process.hrtime.bigint();
 console.table({
+    first: times[0] / 1e6,
     min: Math.min(...times) / 1e6,
     max: Math.max(...times) / 1e6,
     avg: Number(postAvg - preAvg) / 1e6 / runCount,

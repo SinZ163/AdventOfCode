@@ -18,10 +18,10 @@ export default function main(rawInput: string): [string|number, string|number] {
         ">": 25137 
     }
     let part2Scoring: Record<string, number> = {
-        ")": 1,
-        "]": 2,
-        "}": 3,
-        ">": 4 
+        "(": 1,
+        "[": 2,
+        "{": 3,
+        "<": 4 
     }
 
     let scores: number[] = [];
@@ -52,8 +52,8 @@ export default function main(rawInput: string): [string|number, string|number] {
                     break;
                 }
                 score *= 5;
-                // console.log(cell, part2);
-                score += part2Scoring[charMap[cell]];
+                // console.log(cell, part2, part2Scoring[cell]);
+                score += part2Scoring[cell];
             }
             scores.push(score);
         }
