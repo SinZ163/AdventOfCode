@@ -22,7 +22,7 @@ let times: number[] = [];
 let preAvg = process.hrtime.bigint();
 for (let i = 0; i < runCount; i++) {
     let preRun = process.hrtime.bigint();
-    let output = day(input);
+    let output = day(input, i);
     let postRun = process.hrtime.bigint();
     if (i === 0) {
         if (inputType === "test") {
