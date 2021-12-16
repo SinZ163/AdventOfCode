@@ -1,7 +1,7 @@
-export default function main(rawInput: string): [string|number, string|number] {
+export default function main(rawInput: string): [string|number, string|number|bigint] {
     let input = rawInput.split('');
     let part1 = 0;
-    let part2 = 0;
+    let part2 = BigInt(0);
 
     let bytes: Array<0|1> = [];
     for (let [i, char] of input.entries()) {
@@ -25,7 +25,7 @@ interface Output {
     bytes: Array<0|1>,
     versions: number[],
     packetType: PacketType,
-    result: number
+    result: bigint
 }
 
 function readPacket(bytes: Array<0|1>): Output {
@@ -38,7 +38,7 @@ function readPacket(bytes: Array<0|1>): Output {
     let packetBytes = bytes.splice(0, 3);
     let packetType = (packetBytes[0] << 2) + (packetBytes[1] << 1) + packetBytes[2] as PacketType
 
-    let result: number = -1;
+    let result: bigint = BigInt(-1);
     
     if (packetType === 4) {
         let payload = [];
@@ -49,10 +49,10 @@ function readPacket(bytes: Array<0|1>): Output {
                 break;
             }
         }
-        result = Number.parseInt(payload.join(''), 2);
+        result = BigInt("0b" + payload.join(''));
     } else {
         let operatorMode = bytes.splice(0, 1)[0];
-        let outputs: number[] = [];
+        let outputs: bigint[] = [];
         if (operatorMode === 0) {
             let length = Number.parseInt(bytes.splice(0, 15).join(''), 2);
             let subsection = bytes.splice(0, length);
@@ -62,7 +62,7 @@ function readPacket(bytes: Array<0|1>): Output {
                 outputs.push(output.result);
                 versions.push(...output.versions);
             }
-        } else {
+        } else if (operatorMode === 1) {
             let length = Number.parseInt(bytes.splice(0, 11).join(''), 2);
             while (length-- > 0) {
                 let output = readPacket(bytes);
@@ -72,26 +72,26 @@ function readPacket(bytes: Array<0|1>): Output {
         }
         switch(packetType) {
             case 0:
-                result = outputs.reduce((prev, current) => prev + current, 0);
+                result = outputs.reduce((prev, current) => prev + current, BigInt(0));
                 break;
             case 1:
-                result = outputs.reduce((prev, current) => prev * current, 1);
+                result = outputs.reduce((prev, current) => prev * current, BigInt(1));
                 break;
             case 2:
-                result = Math.min(...outputs);
+                result = outputs.reduce((prev, current) => prev < current ? prev : current, BigInt(Number.MAX_SAFE_INTEGER));
                 break;
             case 3:
-                result = Math.max(...outputs);
+                result = outputs.reduce((prev, current) => prev > current ? prev : current, BigInt(Number.MIN_SAFE_INTEGER));
                 break;
             // 4 is already done
             case 5:
-                result = outputs[0] > outputs[1] ? 1: 0;
+                result = outputs[0] > outputs[1] ? BigInt(1): BigInt(0);
                 break;
             case 6:
-                result = outputs[0] < outputs[1] ? 1: 0;
+                result = outputs[0] < outputs[1] ? BigInt(1): BigInt(0);
                 break;
             case 7:
-                result = outputs[0] === outputs[1] ? 1: 0;
+                result = outputs[0] === outputs[1] ? BigInt(1): BigInt(0);
                 break;
         }
     }
