@@ -1,5 +1,4 @@
 export default function main(rawInput: string): [string|number, string|number] {
-    // console.log(rawInput);
     let input = rawInput.match(/target area: x=(-?\d+)\.\.(-?\d+), y=(-?\d+)\.\.(-?\d+)/);
     
     let part1 = 0;
@@ -20,14 +19,15 @@ export default function main(rawInput: string): [string|number, string|number] {
 
     part2 = (targetXDelta + 1) * (targetYDelta + 1);
 
-    let triangles = [];
+    let triangle = -1;
     for (let x = targetXMin; x <= targetXMax; x++) {
         let triangleValue = (Math.sqrt(8*x + 1) - 1) / 2;
         if (Number.isInteger(triangleValue)) {
-            triangles.push(triangleValue);
+            triangle = triangleValue;
+            break;
         } 
     }
-    if (triangles.length === 0) {
+    if (triangle === -1) {
         throw new Error("Oh this approach does not work");
     }
 
@@ -44,38 +44,30 @@ export default function main(rawInput: string): [string|number, string|number] {
             if (step > peakSteps) peakSteps = step;
             if (distance >= targetYMin && distance <= targetYMax) {
                 ySteps[step] ? ySteps[step].push(y) : ySteps[step] = [y];
-                // break;
             }
             
         }
     }
-    // console.log(ySteps);
 
-    for (let xv = triangles[0]; (2*xv - 1) <= targetXMax; xv++) {
-        // console.log("xv", xv);
-        
+    for (let xv = triangle; (2*xv - 1) <= targetXMax; xv++) {        
         let yHit = new Set();
         let velocity = xv;
         let distance = 0;
         let step = 0;
         while (distance <= targetXMax && step < peakSteps) {
-            // console.log(xv, distance, velocity, stepBounds);
             step++;
             distance += velocity;
             velocity -= Math.sign(velocity);
             if (distance >= targetXMin && distance <= targetXMax) {
-                // console.log(xv, step);
                 if (ySteps[step]) {
                     for (let y of ySteps[step]) {
                         yHit.add(y);
-                        // console.log(yHit);
                     }
                 }
             }
         }
         part2 += yHit.size;
     }
-    // console.log(permutations);
 
     return [part1, part2];
 }
