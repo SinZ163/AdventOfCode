@@ -51,8 +51,6 @@ export default function main(rawInput: string): [string|number, string|number] {
     }
     // console.log(ySteps);
 
-    let permutations = [];
-
     for (let xv = triangles[0]; (2*xv - 1) <= targetXMax; xv++) {
         // console.log("xv", xv);
         
@@ -69,16 +67,13 @@ export default function main(rawInput: string): [string|number, string|number] {
                 // console.log(xv, step);
                 if (ySteps[step]) {
                     for (let y of ySteps[step]) {
-                        if (!yHit.has(y)) {
-                            permutations.push([xv, y]);
-                            part2++;
-                        }
                         yHit.add(y);
                         // console.log(yHit);
                     }
                 }
             }
         }
+        part2 += yHit.size;
     }
     // console.log(permutations);
 
