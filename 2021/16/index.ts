@@ -5,7 +5,7 @@ export default function main(rawInput: string): [string|number, string|number|bi
 
     let bytes: Array<0|1> = [];
     for (let [i, char] of input.entries()) {
-        let newBits = Number.parseInt(char, 16).toString(2).split('').map(val => Number.parseInt(val)) as Array<0|1>;
+        let newBits = Number.parseInt(char, 16).toString(2).split('').map(val => val === "1" ? 1 : 0);
         while (newBits.length < 4) {
             newBits = [0, ...newBits];
         }
