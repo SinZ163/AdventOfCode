@@ -14,6 +14,8 @@ export default function main(rawInput: string, runCount: number): [string|number
             let num: number = 0; 
             if (charIndex >= 48 && charIndex < 58) {
                 num = charIndex - 48;
+                if (first == 0) first = num * 10;
+                last = num;
             }
             let p2num = num;
             if (num == 0) {
@@ -56,10 +58,6 @@ export default function main(rawInput: string, runCount: number): [string|number
                     continue;
                 }
             };
-            if (num != 0) {
-                if (first == 0) first = num * 10;
-                last = num;
-            }
             if (!p2first) p2first = p2num * 10;
             p2last = p2num;
         }

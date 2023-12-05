@@ -15,7 +15,9 @@ async function main() {
     }
     
     let preInput = process.hrtime.bigint();
-    const input = fs.readFileSync(`${argv[2]}/${inputType}.txt`).toString();
+    let input = fs.readFileSync(`${argv[2]}/${inputType}.txt`).toString();
+    input = input.replaceAll("\r", "");
+    input = input.trimEnd();
     let postInput = process.hrtime.bigint();
     
     let preRequire = process.hrtime.bigint();
